@@ -1,21 +1,24 @@
-import * as fs from 'fs';
+// import * as fs from 'fs';
 import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 
-import 'dotenv/config';
-
 // This example requires environment variables named "SPEECH_KEY" and "SPEECH_REGION"
-const speechConfig = sdk.SpeechConfig.fromSubscription(process.env.SPEECH_KEY, process.env.SPEECH_REGION);
+const speechConfig = sdk.SpeechConfig.fromSubscription(import.meta.env.VITE_SPEECH_KEY, import.meta.env.VITE_SPEECH_REGION);
 speechConfig.speechRecognitionLanguage = "en-US";
 
-function fromFile() {
-    let audioConfig = sdk.AudioConfig.fromWavFileInput(fs.readFileSync("whatstheweatherlike.wav"));
+// disable telemetry data
+sdk.Recognizer.enableTelemetry(false);
+
+export function fromFile() {
+    // let audioConfig = sdk.AudioConfig.fromWavFileInput(fs.readFileSync("../whatstheweatherlike.wav"));
+    let audioConfig  = sdk.AudioConfig.fromDefaultMicrophoneInput();
     let speechRecognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
 
     speechRecognizer.recognizeOnceAsync(result => {
         switch (result.reason) {
             case sdk.ResultReason.RecognizedSpeech:
                 console.log(`RECOGNIZED: Text=${result.text}`);
-                break;
+                return result.text;
+                // break;
             case sdk.ResultReason.NoMatch:
                 console.log("NOMATCH: Speech could not be recognized.");
                 break;
@@ -33,4 +36,3 @@ function fromFile() {
         speechRecognizer.close();
     });
 }
-fromFile();

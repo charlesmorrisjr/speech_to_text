@@ -1,14 +1,14 @@
-const fs = require("fs");
-const sdk = require("microsoft-cognitiveservices-speech-sdk");
+import * as fs from 'fs';
+import * as sdk from 'microsoft-cognitiveservices-speech-sdk';
 
-require('dotenv').config({ path: './config/.env' });
+import 'dotenv/config';
 
 // This example requires environment variables named "SPEECH_KEY" and "SPEECH_REGION"
 const speechConfig = sdk.SpeechConfig.fromSubscription(process.env.SPEECH_KEY, process.env.SPEECH_REGION);
 speechConfig.speechRecognitionLanguage = "en-US";
 
 function fromFile() {
-    let audioConfig = sdk.AudioConfig.fromWavFileInput(fs.readFileSync("untitled.wav"));
+    let audioConfig = sdk.AudioConfig.fromWavFileInput(fs.readFileSync("whatstheweatherlike.wav"));
     let speechRecognizer = new sdk.SpeechRecognizer(speechConfig, audioConfig);
 
     speechRecognizer.recognizeOnceAsync(result => {
